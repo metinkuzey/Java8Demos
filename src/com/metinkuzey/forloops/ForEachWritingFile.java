@@ -1,0 +1,70 @@
+package com.metinkuzey.forloops;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+public class ForEachWritingFile {
+
+    public static void main(String[] args) {
+
+    	ForEachWritingFile obj = new ForEachWritingFile();
+        obj.save(Paths.get("C:\\forEachOutput"), obj.createDummyFiles());
+        /*
+        Path path = Paths.get("C:\\forEachOutput");
+        obj.createDummyFiles().forEach(o -> obj.saveFile(path, o));
+        */
+    }
+
+    public void save(Path path, List<DummyFile> files) {
+
+        if (!Files.isDirectory(path)) {
+            throw new IllegalArgumentException("Path must be a directory");
+        }
+       
+        files.forEach(f -> saveFile(path, f));
+
+    }
+    
+    public void saveFile(Path path, DummyFile f) {
+        try {
+            int id = f.getId();
+            // create a filename
+            String fileName = id + ".txt";
+            Files.write(path.resolve(fileName),
+                    f.getContent().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<DummyFile> createDummyFiles() {
+        return Arrays.asList(
+                new DummyFile(1, "Printing"),
+                new DummyFile(2, "ForEachLoop"),
+                new DummyFile(3, "WithJava8"));
+    }
+
+    class DummyFile {
+        int id;
+        String content;
+
+        public DummyFile(int id, String content) {
+            this.id = id;
+            this.content = content;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getContent() {
+            return content;
+        }
+    }
+
+}
